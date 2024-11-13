@@ -3,6 +3,7 @@ import {
   changePassword,
   forgotPassword,
   getUser,
+  getUserProfileWithTodos,
   loginUser,
   logoutUser,
   registerUser,
@@ -26,12 +27,13 @@ const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/logout", logoutUser);
+router.post("/logout", logoutUser);
 router.get("/user", protect, getUser);
 router.patch("/user", protect, updateUser);
+// Sample route to search users by email (example: /auth/search?email=someuser@gmail.com)
 
 // admin route
-router.delete("/admin/users/:id", protect, adminMiddleware, deleteUser);
+router.delete("/admin/users/:id", protect, adminMiddleware , deleteUser);
 
 // get all users
 router.get("/admin/users", protect, creatorMiddleware, getAllUsers);
@@ -53,5 +55,8 @@ router.post("/reset-password/:resetPasswordToken", resetPassword);
 
 // change password ---> user must be logged in
 router.patch("/change-password", protect, changePassword);
+
+router.get("/:userId/profile", protect, getUserProfileWithTodos);
+
 
 export default router;

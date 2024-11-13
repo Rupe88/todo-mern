@@ -19,29 +19,63 @@ export const deleteUser = asyncHandler(async (req, res) => {
 // get all users with optional search filter
 export const getAllUsers = asyncHandler(async (req, res) => {
   try {
-    // Extract search filter query parameters
-    const { name, email, role } = req.query;
+    // Extract search and filter query parameters
+    const { name, email, role, startDate, endDate, sortBy, sortOrder, page = 1, limit = 10 } = req.query;
 
-    // Build search criteria object based on available parameters
+    // Build search criteria object
     const searchCriteria = {};
+
+    // Apply search filters for name and email (case-insensitive)
     if (name) {
-      searchCriteria.name = { $regex: name, $options: "i" }; // Case-insensitive
+      searchCriteria.name = { $regex: name, $options: "i" };
     }
     if (email) {
       searchCriteria.email = { $regex: email, $options: "i" };
     }
     if (role) {
-      searchCriteria.role = role; 
+      searchCriteria.role = role;
     }
 
-    const users = await User.find(searchCriteria);
-
-    if (!users || users.length === 0) {
-      return res.status(404).json({ message: "No users found" });
+    // Apply date range filter (createdAt between startDate and endDate)
+    if (startDate || endDate) {
+      searchCriteria.createdAt = {};
+      if (startDate) {
+        searchCriteria.createdAt.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        searchCriteria.createdAt.$lte = new Date(endDate);
+      }
     }
 
-    res.status(200).json(users);
+    // Determine sort order (ascending or descending)
+    const sortOptions = {};
+    if (sortBy) {
+      sortOptions[sortBy] = sortOrder === "desc" ? -1 : 1;
+    } else {
+      sortOptions.createdAt = -1; // Default: sort by creation date in descending order
+    }
+
+    // Calculate pagination options
+    const skip = (page - 1) * limit;
+
+    // Query the database
+    const users = await User.find(searchCriteria)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    // Count total documents for pagination
+    const totalUsers = await User.countDocuments(searchCriteria);
+
+    // Return paginated, filtered, and sorted results
+    res.status(200).json({
+      totalUsers,
+      totalPages: Math.ceil(totalUsers / limit),
+      currentPage: parseInt(page),
+      users,
+    });
   } catch (error) {
+    console.error("Error fetching users:", error);
     res.status(500).json({ message: "Cannot get users" });
   }
 });

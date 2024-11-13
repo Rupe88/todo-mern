@@ -1,31 +1,33 @@
-// multerConfig.js
+// src/middleware/multerMiddleware.js
 import multer from "multer";
 import path from "path";
 
-// Configure storage for multer
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Save files to the "uploads" folder
   },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `${uniqueSuffix}-${file.originalname}`);
   },
 });
 
-// Initialize multer with storage config
-const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png|pdf|doc|docx/; // allowed file types
-    const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = fileTypes.test(file.mimetype);
+// Filter only image files (optional)
+const fileFilter = (req, file, cb) => {
+  const fileTypes = /jpeg|jpg|png|gif/;
+  const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = fileTypes.test(file.mimetype);
 
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error("Only images and documents are allowed"));
-    }
-  },
+  if (mimetype && extname) {
+    return cb(null, true);
+  }
+  cb(new Error("Only image files are allowed!"));
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
 });
 
 export default upload;

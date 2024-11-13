@@ -7,6 +7,7 @@ import Token from "../../models/auth/Token.js";
 import crypto from "node:crypto";
 import hashToken from "../../helpers/hashToken.js";
 import sendEmail from "../../helpers/sendEmail.js";
+import TaskModel from "../../models/tasks/TaskModel.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -216,7 +217,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
   let token = await Token.findOne({ userId: user._id });
 
-  // if token exists --> delete the token
+  // if token exists  delete the token
   if (token) {
     await token.deleteOne();
   }
@@ -238,7 +239,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   const verificationLink = `${process.env.CLIENT_URL}/verify-email/${verificationToken}`;
 
   // send email
-  const subject = "Email Verification - AuthKit";
+  const subject = "Email Verification - Task ";
   const send_to = user.email;
   const reply_to = "noreply@gmail.com";
   const template = "emailVerification";
@@ -334,7 +335,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const resetLink = `${process.env.CLIENT_URL}/reset-password/${passwordResetToken}`;
 
   // send email to user
-  const subject = "Password Reset - AuthKit";
+  const subject = "Password Reset - Mero Task";
   const send_to = user.email;
   const send_from = process.env.USER_EMAIL;
   const reply_to = "noreply@noreply.com";
@@ -411,3 +412,35 @@ export const changePassword = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Password could not be changed!" });
   }
 });
+
+//populate
+export const getUserProfileWithTodos = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Find user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find todos associated with the user
+    const todos = await TaskModel.find({ user: userId });
+
+    res.status(200).json({
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+      todos, // Array of todos associated with the user
+    });
+  } catch (error) {
+    console.error("Error fetching user profile with todos:", error);
+    res.status(500).json({ message: "Failed to retrieve user profile" });
+  }
+});
+
+
+

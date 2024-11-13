@@ -20,7 +20,7 @@ const TaskSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["active", "inactive"],
+      enum: ["active", "completed", "pending"],
       default: "active",
     },
 
@@ -40,12 +40,10 @@ const TaskSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    tags: {
-      type: [String], // Array of tags for categorizing tasks
-      default: [],
-    },
+   
     file: {
-      type: String, // Store the filename if a file is uploaded
+      type: String,
+      require:true,
     },
   },
   { timestamps: true }
