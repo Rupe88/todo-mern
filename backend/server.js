@@ -3,14 +3,17 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connect from "./src/db/connect.js";
 import cookieParser from "cookie-parser";
-import fs from "node:fs";
 import errorHandler from "./src/helpers/errorhandler.js";
 import authROutes from "./src/routes/userRoutes.js";
+import path from "path";
+import fs from "fs"
 import taskROutes from "./src/routes/tasksRoutes.js";
-
+import { fileURLToPath } from 'url';
 dotenv.config();
 
 const port = process.env.PORT || 4000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -24,8 +27,13 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 // error handler middleware
+
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(errorHandler);
 
 //routes

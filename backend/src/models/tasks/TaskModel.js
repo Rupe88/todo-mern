@@ -40,6 +40,13 @@ const TaskSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    tags: {
+      type: [String], // Array of tags for categorizing tasks
+      default: [],
+    },
+    file: {
+      type: String, // Store the filename if a file is uploaded
+    },
   },
   { timestamps: true }
 );
