@@ -6,15 +6,20 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const { forgotPassword } = useContext(AuthContext);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     if (!email) {
       toast.error('Please enter your email');
       return;
     }
+    setIsSubmitting(true);  // Disable button
     await forgotPassword(email);
+    setIsSubmitting(false); // Enable button
     setEmail(''); // Clear the email input after submission
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -33,12 +38,16 @@ const ForgotPassword = () => {
             placeholder="Enter your email"
             required
           />
-          <button
-            type="submit"
-            className="w-full bg-red-600 hover:bg-red-700 text-white p-2 rounded-md mt-4 transition duration-200"
-          >
-            Send Reset Link
-          </button>
+    <button
+  type="submit"
+  disabled={isSubmitting}
+  className={`w-full bg-red-600 hover:bg-red-700 text-white p-2 rounded-md mt-4 transition duration-200 ${
+    isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+>
+  {isSubmitting ? "Sending..." : "Send Reset Link"}
+</button>
+
         </form>
       </div>
     </div>

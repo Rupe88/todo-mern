@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Navbar from "./compoennts/Navbar";
 import TodoPage from "./pages/TodoPage";
+import ResetPassword from "./pages/ResetPassword";
 // import { AuthContext } from "./context/AuthContext";
 // import { useContext } from "react";
 import DashboardPage from "./pages/admin/DashboardPage";
@@ -26,6 +27,7 @@ const App = () => {
     <Route path="/todo" element={<TodoPage/>}/>
 <Route path="/admin/dashboard" element={<DashboardPage />} />
 <Route path="/forgot-password" element={<ForgotPassword/>}/>
+<Route path="/reset-password/:resetToken" element={<ResetPassword/>}/>
    </Routes>
    </>
   )

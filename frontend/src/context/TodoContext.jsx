@@ -29,18 +29,37 @@ export const TodoProvider = ({ children }) => {
   // Create a new task with file upload
   const createTask = async (taskData) => {
     const formData = new FormData();
-    Object.keys(taskData).forEach((key) => formData.append(key, taskData[key]));
-
+  
+    // Append other fields
+    Object.keys(taskData).forEach((key) => {
+      if (key !== 'file') formData.append(key, taskData[key]);
+    });
+  
+    // Ensure the file is correctly added as FormData
+    if (taskData.file && taskData.file instanceof File) {
+      formData.append('file', taskData.file);
+    } else {
+      console.error("taskData.file is either missing or not a File object");
+      return; // Stop here if the file is invalid
+    }
+  
     try {
       const response = await axios.post('http://localhost:3000/task/create', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        // Do NOT set 'Content-Type' manually; let Axios handle it
       });
       setTasks([...tasks, response.data]);
       toast.success('Task created successfully!');
     } catch (error) {
+      console.error("Error:", error.response);  // Log error for debugging
+      console.log("FormData entries:", Array.from(formData.entries()));
+
       toast.error(error.response?.data?.message || 'Failed to create task');
     }
   };
+  
+  
+  
+  
 
   // Update an existing task with file upload
   const updateTask = async (id, taskData) => {
