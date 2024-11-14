@@ -37,11 +37,11 @@ export const protect = asyncHandler(async (req, res, next) => {
 export const adminMiddleware = asyncHandler(async (req, res, next) => {
   if (req.user && req.user.role === "admin") {
     // if user is admin, move to the next middleware/controller
-    next();
-    return;
+   return next();
+  
   }
   // if not admin, send 403 Forbidden --> terminate the request
-  res.status(403).json({ message: "Only admins can do this!" });
+  return res.status(403).json({ message: "Only admins can do this!" });
 });
 
 export const creatorMiddleware = asyncHandler(async (req, res, next) => {

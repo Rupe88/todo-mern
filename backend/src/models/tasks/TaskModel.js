@@ -43,7 +43,6 @@ const TaskSchema = new mongoose.Schema(
    
     file: {
       type: String,
-      require:true,
     },
   },
   { timestamps: true }
