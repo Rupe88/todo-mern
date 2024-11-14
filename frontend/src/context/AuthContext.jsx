@@ -20,7 +20,11 @@ export const AuthProvider = ({ children }) => {
 
   const registerUser = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:3000/auth/register', userData, {withCredentials:true});
+      const response = await axios.post(
+        'http://localhost:3000/auth/register',
+        userData,
+        { withCredentials: true }
+      );
       setUser(response.data);
       toast.success('Registered successfully!');
       navigate('/login');
@@ -31,7 +35,11 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:3000/auth/login', userData, {withCredentials:true});
+      const response = await axios.post(
+        'http://localhost:3000/auth/login',
+        userData,
+        { withCredentials: true }
+      );
       setUser(response.data);
       toast.success('Logged in successfully!');
       navigate('/todo');
@@ -42,39 +50,46 @@ export const AuthProvider = ({ children }) => {
 
   const logoutUser = async () => {
     try {
-      await axios.post('http://localhost:3000/auth/logout',{withCredentials:true});
+      await axios.post('http://localhost:3000/auth/logout', {
+        withCredentials: true,
+      });
       setUser(null);
       toast.success('Logged out successfully!');
       navigate('/login');
     } catch (error) {
-        console.log(error)
+      console.log(error);
       toast.error('Logout failed');
     }
   };
 
-
-
   const checkLoginStatus = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/auth/login-status', {
-        withCredentials:true
-      });
-      if (response.data.user) { // Ensure we have user data from response
+      const response = await axios.get(
+        'http://localhost:3000/auth/login-status',
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.data.user) {
+        // Ensure we have user data from response
         setUser(response.data.user);
       }
       // setUser(response.data);
     } catch (error) {
-        console.log(error)
+      console.log(error);
       setUser(null);
     } finally {
       setLoading(false);
     }
   };
-  
 
   const forgotPassword = async (email) => {
     try {
-      await axios.post('http://localhost:3000/auth/forgot-password', { email }, {withCredentials:true});
+      await axios.post(
+        'http://localhost:3000/auth/forgot-password',
+        { email },
+        { withCredentials: true }
+      );
       toast.success('Password reset link sent to your email');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to send reset link');
@@ -83,7 +98,11 @@ export const AuthProvider = ({ children }) => {
 
   const resetPassword = async (resetToken, password) => {
     try {
-      await axios.post(`http://localhost:3000/auth/reset-password/${resetToken}`, { password }, {withCredentials:true});
+      await axios.post(
+        `http://localhost:3000/auth/reset-password/${resetToken}`,
+        { password },
+        { withCredentials: true }
+      );
       toast.success('Password reset successfully!');
       navigate('/login');
     } catch (error) {
@@ -93,14 +112,16 @@ export const AuthProvider = ({ children }) => {
 
   const changePassword = async (passwords) => {
     try {
-      await axios.post('http://localhost:3000/auth/change-password', passwords, {withCredentials:true});
+      await axios.post(
+        'http://localhost:3000/auth/change-password',
+        passwords,
+        { withCredentials: true }
+      );
       toast.success('Password changed successfully!');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to change password');
     }
   };
-
-
 
   return (
     <AuthContext.Provider
@@ -116,7 +137,6 @@ export const AuthProvider = ({ children }) => {
       }}
     >
       {children}
-      
     </AuthContext.Provider>
   );
 };

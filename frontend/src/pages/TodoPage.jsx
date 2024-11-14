@@ -1,21 +1,22 @@
 import { useContext, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TodoContext } from '../context/TodoContext';
-import { 
-  Calendar, 
-  Plus, 
-  Trash2, 
-  Edit, 
+import {
+  Calendar,
+  Plus,
+  Trash2,
+  Edit,
   Check,
   X,
   Clock,
   AlertCircle,
   Filter,
-  Search
+  Search,
 } from 'lucide-react';
 
 const TodoPage = () => {
-  const { tasks, loading, createTask, updateTask, deleteTask, completeTask } = useContext(TodoContext);
+  const { tasks, loading, createTask, updateTask, deleteTask, completeTask } =
+    useContext(TodoContext);
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
@@ -34,19 +35,19 @@ const TodoPage = () => {
   const priorities = {
     low: 'bg-blue-50 text-blue-600 border border-blue-200',
     medium: 'bg-yellow-50 text-yellow-600 border border-yellow-200',
-    high: 'bg-red-50 text-red-600 border border-red-200'
+    high: 'bg-red-50 text-red-600 border border-red-200',
   };
 
   const statuses = {
     active: 'bg-emerald-50 text-emerald-600 border border-emerald-200',
     completed: 'bg-gray-50 text-gray-600 border border-gray-200',
-    pending: 'bg-purple-50 text-purple-600 border border-purple-200'
+    pending: 'bg-purple-50 text-purple-600 border border-purple-200',
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const taskData = { ...newTask, file };
-    
+
     if (isEditing) {
       await updateTask(editTaskId, taskData);
       setIsEditing(false);
@@ -75,7 +76,9 @@ const TodoPage = () => {
     setNewTask({
       title: task.title,
       description: task.description,
-      dueDate: task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : '',
+      dueDate: task.dueDate
+        ? new Date(task.dueDate).toISOString().slice(0, 16)
+        : '',
       priority: task.priority,
       status: task.status,
     });
@@ -88,12 +91,16 @@ const TodoPage = () => {
   };
 
   const filteredTasks = tasks
-    .filter(task => task.title.toLowerCase().includes(searchQuery.toLowerCase()))
-    .filter(task => filterPriority === 'all' || task.priority === filterPriority)
-    .filter(task => filterStatus === 'all' || task.status === filterStatus);
+    .filter((task) =>
+      task.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .filter(
+      (task) => filterPriority === 'all' || task.priority === filterPriority
+    )
+    .filter((task) => filterStatus === 'all' || task.status === filterStatus);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="min-h-screen bg-gray-50"
@@ -118,7 +125,10 @@ const TodoPage = () => {
             <div className="lg:w-1/4 space-y-4">
               <div className="bg-white rounded-xl shadow-sm p-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={18}
+                  />
                   <input
                     type="text"
                     placeholder="Search tasks..."
@@ -134,9 +144,11 @@ const TodoPage = () => {
                   <Filter size={18} />
                   <span>Filters</span>
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm text-gray-600 mb-2">Priority</label>
+                  <label className="block text-sm text-gray-600 mb-2">
+                    Priority
+                  </label>
                   <select
                     value={filterPriority}
                     onChange={(e) => setFilterPriority(e.target.value)}
@@ -150,7 +162,9 @@ const TodoPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-gray-600 mb-2">Status</label>
+                  <label className="block text-sm text-gray-600 mb-2">
+                    Status
+                  </label>
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
@@ -194,15 +208,17 @@ const TodoPage = () => {
                         type="text"
                         placeholder="Task Title"
                         value={newTask.title}
-                        onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                        onChange={(e) =>
+                          setNewTask({ ...newTask, title: e.target.value })
+                        }
                         className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                         required
                       />
 
                       <div className="relative">
-                        <input 
-                          type="file" 
-                          accept="image/*" 
+                        <input
+                          type="file"
+                          accept="image/*"
                           onChange={(e) => setFile(e.target.files[0])}
                           className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                         />
@@ -211,27 +227,46 @@ const TodoPage = () => {
                       <textarea
                         placeholder="Description"
                         value={newTask.description}
-                        onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                        onChange={(e) =>
+                          setNewTask({
+                            ...newTask,
+                            description: e.target.value,
+                          })
+                        }
                         className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                         rows="3"
                       />
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Due Date
+                          </label>
                           <input
                             type="datetime-local"
                             value={newTask.dueDate}
-                            onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
+                            onChange={(e) =>
+                              setNewTask({
+                                ...newTask,
+                                dueDate: e.target.value,
+                              })
+                            }
                             className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Priority
+                          </label>
                           <select
                             value={newTask.priority}
-                            onChange={(e) => setNewTask({...newTask, priority: e.target.value})}
+                            onChange={(e) =>
+                              setNewTask({
+                                ...newTask,
+                                priority: e.target.value,
+                              })
+                            }
                             className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                           >
                             <option value="low">Low</option>
@@ -241,10 +276,14 @@ const TodoPage = () => {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Status
+                          </label>
                           <select
                             value={newTask.status}
-                            onChange={(e) => setNewTask({...newTask, status: e.target.value})}
+                            onChange={(e) =>
+                              setNewTask({ ...newTask, status: e.target.value })
+                            }
                             className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50"
                           >
                             <option value="active">Active</option>
@@ -269,9 +308,13 @@ const TodoPage = () => {
 
               {loading ? (
                 <div className="flex items-center justify-center py-12">
-                  <motion.div 
+                  <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    }}
                     className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full"
                   />
                 </div>
@@ -279,9 +322,16 @@ const TodoPage = () => {
                 <motion.div layout className="space-y-4">
                   {filteredTasks.length === 0 ? (
                     <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-                      <AlertCircle size={48} className="mx-auto text-gray-400 mb-4" />
-                      <h3 className="text-xl font-medium text-gray-700 mb-2">No tasks found</h3>
-                      <p className="text-gray-500">Try adjusting your filters or create a new task</p>
+                      <AlertCircle
+                        size={48}
+                        className="mx-auto text-gray-400 mb-4"
+                      />
+                      <h3 className="text-xl font-medium text-gray-700 mb-2">
+                        No tasks found
+                      </h3>
+                      <p className="text-gray-500">
+                        Try adjusting your filters or create a new task
+                      </p>
                     </div>
                   ) : (
                     <AnimatePresence>
@@ -293,24 +343,39 @@ const TodoPage = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
                           className={`bg-white rounded-xl shadow-sm p-6 border-l-4 ${
-                            task.status === 'completed' ? 'border-l-gray-400' :
-                            task.priority === 'high' ? 'border-l-red-500' :
-                            task.priority === 'medium' ? 'border-l-yellow-500' :
-                            'border-l-blue-500'
+                            task.status === 'completed'
+                              ? 'border-l-gray-400'
+                              : task.priority === 'high'
+                              ? 'border-l-red-500'
+                              : task.priority === 'medium'
+                              ? 'border-l-yellow-500'
+                              : 'border-l-blue-500'
                           }`}
                         >
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-3 mb-3">
-                                <h3 className={`text-lg font-semibold ${
-                                  task.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-900'
-                                }`}>
+                                <h3
+                                  className={`text-lg font-semibold ${
+                                    task.status === 'completed'
+                                      ? 'text-gray-400 line-through'
+                                      : 'text-gray-900'
+                                  }`}
+                                >
                                   {task.title}
                                 </h3>
-                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${priorities[task.priority]}`}>
+                                <span
+                                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                    priorities[task.priority]
+                                  }`}
+                                >
                                   {task.priority}
                                 </span>
-                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${statuses[task.status]}`}>
+                                <span
+                                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                    statuses[task.status]
+                                  }`}
+                                >
                                   {task.status}
                                 </span>
                               </div>
@@ -323,9 +388,13 @@ const TodoPage = () => {
                                 />
                               )}
 
-                              <p className={`text-gray-600 mb-4 ${
-                                task.status === 'completed' ? 'text-gray-400 line-through' : ''
-                              }`}>
+                              <p
+                                className={`text-gray-600 mb-4 ${
+                                  task.status === 'completed'
+                                    ? 'text-gray-400 line-through'
+                                    : ''
+                                }`}
+                              >
                                 {task.description}
                               </p>
                               <div className="flex items-center gap-4 text-sm text-gray-500">
@@ -336,7 +405,10 @@ const TodoPage = () => {
                                 {task.status !== 'completed' && (
                                   <span className="flex items-center gap-1">
                                     <Clock size={16} />
-                                    Due by {new Date(task.dueDate).toLocaleTimeString()}
+                                    Due by{' '}
+                                    {new Date(
+                                      task.dueDate
+                                    ).toLocaleTimeString()}
                                   </span>
                                 )}
                               </div>
