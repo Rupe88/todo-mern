@@ -9,15 +9,16 @@ import ResetPassword from "./pages/ResetPassword";
 // import { useContext } from "react";
 import DashboardPage from "./pages/admin/DashboardPage";
 import ForgotPassword from "./compoennts/ForgotPassword";
-import ChatBot from "./chatbot/ChatBot";
+// import ChatBot from "./chatbot/ChatBot";
+import { Suspense } from "react";
 const App = () => {
-  // const { user } = useContext(AuthContext);
-  // console.log(user)
+
 
   return (
    <>
+   <Suspense fallback={<h1>Loading</h1>}>
    <Navbar/>
-   <ChatBot/>
+   {/* <ChatBot/> */}
    <Routes>
 
     <Route path="/" element={<HomePage/>}/>
@@ -25,10 +26,12 @@ const App = () => {
     <Route path="/login" element={<LoginPage/>}/>
     <Route path="/register" element={<RegisterPage/>}/>
     <Route path="/todo" element={<TodoPage/>}/>
-<Route path="/admin/dashboard" element={<DashboardPage />} />
-<Route path="/forgot-password" element={<ForgotPassword/>}/>
-<Route path="/reset-password/:resetToken" element={<ResetPassword/>}/>
+   <Route path="/admin/dashboard" element={<DashboardPage />} />
+   <Route path="/forgot-password" element={<ForgotPassword/>}/>
+   <Route path="/reset-password:/" element={<ResetPassword/>}/>
    </Routes>
+   </Suspense>
+  
    </>
   )
 }
